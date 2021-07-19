@@ -12,6 +12,7 @@
 
 #ifdef RETROACHIEVEMENTS
 #include "retroachievements.h"
+#include "vmachine.h"
 #endif
 
 //-----------------------------------------------------------------------------
@@ -173,3 +174,11 @@ void    Action_Switch_Mode(void)
 
 //-----------------------------------------------------------------------------
 
+void    Action_Switch_Machine_Pause(void)
+{
+    Machine_Pause();
+
+#ifdef RETROACHIEVEMENTS
+    RA_SetPaused(g_machine_flags & MACHINE_PAUSED);
+#endif
+}
