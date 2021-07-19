@@ -216,6 +216,12 @@ bool    Reload_ROM()
         Msg(MSGT_USER, "%s", Msg_Get(MSG_LoadROM_Reload_No_ROM));
         return false;
     }
+
+#ifdef RETROACHIEVEMENTS
+    if (!RA_ConfirmLoadNewRom(false))
+        return false;
+#endif
+
     if (Load_ROM(LOAD_MODE_GUI, FALSE))
     {
         Msg(MSGT_USER, "%s", Msg_Get(MSG_LoadROM_Reload_Reloaded));

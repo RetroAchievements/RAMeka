@@ -402,6 +402,10 @@ void    Video_UpdateEvents()
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             if (g_env.state == MEKA_STATE_INIT || g_env.state == MEKA_STATE_SHUTDOWN)
                 break;
+#ifdef RETROACHIEVEMENTS
+            if (!RA_ConfirmLoadNewRom(true))
+                break;
+#endif
             opt.Force_Quit = TRUE;
             break;
         case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:

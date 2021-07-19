@@ -10,6 +10,10 @@
 #include "db.h"
 #include "video.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
@@ -18,6 +22,11 @@
 // FIXME-DEPTH: Ressources (machines, icons) not faded out
 void    Action_Quit()
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_ConfirmLoadNewRom(true))
+        return;
+#endif
+
     Msg(MSGT_STATUS_BAR, "%s", Msg_Get(MSG_Quit));
 
     // Shut up sound while fading

@@ -12,6 +12,10 @@
 #include "effects.h"
 #include "skin_bg.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -115,6 +119,12 @@ void    Machine_Remove_Cartridge (void)
 
 void    Free_ROM (void)
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_ConfirmLoadNewRom(false))
+        return;
+    RA_ActivateGame(0);
+#endif
+
     // Call BMemory_Save() only if Machine_Off() won't call it
     // FIXME: this is some crap hack, the whole machine thing need to be rewritten
     if (!(g_machine_flags & MACHINE_POWER_ON))

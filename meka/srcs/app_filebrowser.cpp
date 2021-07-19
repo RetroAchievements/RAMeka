@@ -14,6 +14,10 @@
 #include "vlfn.h"
 #include "vmachine.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -902,6 +906,10 @@ void    FB_OpenSelectedEntry()
         }
     case FB_ENTRY_TYPE_FILE:
         {
+#ifdef RETROACHIEVEMENTS
+            if (!RA_ConfirmLoadNewRom(false))
+                break;
+#endif
             FB_OpenFile(entry->file_name);
             break;
         }
