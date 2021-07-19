@@ -9,6 +9,10 @@
 #include "inputs_t.h"
 #include "app_about.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "RA_BuildVer.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -55,15 +59,21 @@ static void     AboutBox_Layout(bool setup)
     {
         int y = 12;
         Font_SetCurrent((t_font_id)g_config.font_about);
-        for (int i = 0; i < 4; i ++)
+        for (int i = 0; i < 5; i ++)
         {
             char buffer[256];
             switch (i)
             {
-            case 0: snprintf(buffer, countof(buffer), Msg_Get(MSG_About_Line_Meka_Date), MEKA_NAME_VERSION, MEKA_DATE); break;
-            case 1: snprintf(buffer, countof(buffer), Msg_Get(MSG_About_Line_Authors), MEKA_AUTHORS_SHORT); break;
-            case 2: snprintf(buffer, countof(buffer), Msg_Get(MSG_About_Line_Homepage), MEKA_HOMEPAGE); break;
-            case 3: snprintf(buffer, countof(buffer), "Built %s, %s", MEKA_BUILD_DATE, MEKA_BUILD_TIME); break;
+#ifdef RETROACHIEVEMENTS
+            case 0: y -= (Font_Height() + 3) / 2;
+                    snprintf(buffer, countof(buffer), "RAMeka %s", RAMEKA_VERSION_SHORT); break;
+#else
+            case 0: continue;
+#endif
+            case 1: snprintf(buffer, countof(buffer), Msg_Get(MSG_About_Line_Meka_Date), MEKA_NAME_VERSION, MEKA_DATE); break;
+            case 2: snprintf(buffer, countof(buffer), Msg_Get(MSG_About_Line_Authors), MEKA_AUTHORS_SHORT); break;
+            case 3: snprintf(buffer, countof(buffer), Msg_Get(MSG_About_Line_Homepage), MEKA_HOMEPAGE); break;
+            case 4: snprintf(buffer, countof(buffer), "Built %s, %s", MEKA_BUILD_DATE, MEKA_BUILD_TIME); break;
             }
             const int x = (( (app->box->frame.size.x - dragon_h - 18 - 6) - Font_TextWidth(FONTID_CUR, buffer) ) / 2) + dragon_h + 8 + 6;
             Font_Print(FONTID_CUR, buffer, x, y, COLOR_SKIN_WINDOW_TEXT);
