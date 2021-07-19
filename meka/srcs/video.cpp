@@ -182,7 +182,12 @@ static int Video_ChangeVideoMode(t_video_driver* driver, int w, int h, bool full
     Video_GameMode_UpdateBounds();
 
     // Window title
-    al_set_window_title(g_display, Msg_Get(MSG_Window_Title));
+#ifdef RETROACHIEVEMENTS
+    if (RA_IsInitialized())
+        RA_UpdateAppTitle("");
+    else
+#endif
+        al_set_window_title(g_display, Msg_Get(MSG_Window_Title));
 
     // Recreate all video buffers
     Video_CreateVideoBuffers();

@@ -5,6 +5,7 @@
 #include "../../RAInterface/RA_Consoles.h"
 
 void RA_Initialize();
+bool RA_IsInitialized();
 void RA_AddMenu();
 
 void RA_LoadROM(ConsoleID consoleID);

@@ -11,6 +11,7 @@
 //#include "debugger.h"
 #include "coleco.h"
 
+static bool isInitialized = false;
 
 static int GetMenuItemIndex(HMENU hMenu, const char* ItemName)
 {
@@ -140,11 +141,17 @@ static void LoadROMFromEmu(const char* sFullPath)
 {
 }
 
+bool RA_IsInitialized()
+{
+    return isInitialized;
+}
+
 void RA_Initialize()
 {
     // initialize the DLL
     HWND hWnd = al_get_win_window_handle(g_display);
     RA_Init(hWnd, RA_Meka, RAMEKA_VERSION);
+    isInitialized = true;
 
     // provide callbacks to the DLL
     RA_InstallSharedFunctions(NULL, &CauseUnpause, &CausePause, &RebuildMenu, &GetEstimatedGameTitle, &ResetEmulation, &LoadROMFromEmu);
@@ -154,7 +161,7 @@ void RA_Initialize()
     RA_AttemptLogin(true);
 
     // ensure the titlebar text matches the expected format
-    RA_UpdateAppTitle("RAMEKA");
+    RA_UpdateAppTitle("");
 }
 
 static unsigned char RAMeka_RAMByteReadFn(unsigned int nAddress) 
