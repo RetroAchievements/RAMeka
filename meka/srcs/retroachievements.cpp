@@ -5,14 +5,35 @@
 #include "../../RAInterface/RA_Emulators.h"
 #include "RA_BuildVer.h"
 
-#include "vmachine.h"
-//#include "app_memview.h"
-//#include "app_cheatfinder.h"
-//#include "debugger.h"
-//#include "inputs.h"
+#include "app_cheatfinder.h"
+#include "app_mapview.h"
+#include "app_memview.h"
 #include "coleco.h"
+#include "debugger.h"
+#include "vmachine.h"
 
 static bool isInitialized = false;
+
+void RA_EnforceHardcoreRestrictions()
+{
+    if (MemoryViewer_MainInstance->active)
+        MemoryViewer_SwitchMainInstance();
+
+    if (Debugger.enabled && Debugger.active)
+        Debugger_Switch();
+
+    if (g_CheatFinder_MainInstance->active)
+        CheatFinder_SwitchMainInstance();
+
+    if (TilemapViewer_MainInstance->active)
+        TilemapViewer_SwitchMainInstance();
+
+    if (!(opt.Layer_Mask & LAYER_SPRITES))
+        Action_Switch_Layer_Sprites();
+
+    if (!(opt.Layer_Mask & LAYER_BACKGROUND))
+        Action_Switch_Layer_Background();
+}
 
 static int GetMenuItemIndex(HMENU hMenu, const char* ItemName)
 {
@@ -135,6 +156,9 @@ static void GetEstimatedGameTitle(char* sNameOut)
 
 static void ResetEmulation()
 {
+    if (RA_HardcoreModeIsActive())
+        RA_EnforceHardcoreRestrictions();
+
     Machine_Reset();
 }
 

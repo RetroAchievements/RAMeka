@@ -17,6 +17,10 @@
 #include "vdp.h"
 #include "vmachine.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Definitions
 //-----------------------------------------------------------------------------
@@ -632,6 +636,12 @@ static void MemoryViewer_Switch(t_widget* w)
 void    MemoryViewer_SwitchMainInstance()
 {
     t_memory_viewer* app = MemoryViewer_MainInstance;
+
+#ifdef RETROACHIEVEMENTS
+    if (!app->active && !RA_WarnDisableHardcore("view memory"))
+        return;
+#endif
+
     if (app->active ^= 1)
         Msg(MSGT_USER, "%s", Msg_Get(MSG_MemoryEditor_Enabled));
     else

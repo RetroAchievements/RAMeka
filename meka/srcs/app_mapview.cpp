@@ -14,6 +14,10 @@
 #include "video_m5.h"
 #include "palette.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Definitions
 //-----------------------------------------------------------------------------
@@ -309,6 +313,12 @@ void         TilemapViewer_Switch(t_widget *w)
 void         TilemapViewer_SwitchMainInstance(void)
 {
     t_tilemap_viewer *app = TilemapViewer_MainInstance;
+
+#ifdef RETROACHIEVEMENTS
+    if (!app->active && !RA_WarnDisableHardcore("view the tile map"))
+        return;
+#endif
+
     app->active ^= 1;
     // FIXME-LOCAL
     //if (app->active ^= 1)

@@ -169,7 +169,12 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
 
             // Next frame (pause hack)
             if (Inputs_KeyPressed (ALLEGRO_KEY_F12, FALSE))
-                g_machine_pause_requests = (g_machine_flags & MACHINE_PAUSED) ? 2 : 1;
+            {
+#ifdef RETROACHIEVEMENTS
+                if (!RA_HardcoreModeIsActive())
+#endif
+                    g_machine_pause_requests = (g_machine_flags & MACHINE_PAUSED) ? 2 : 1;
+            }
 
             // Load State & Continue
             if (Inputs_KeyPressed(ALLEGRO_KEY_F7, FALSE))

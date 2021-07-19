@@ -88,6 +88,11 @@ void    Action_Quit()
 // ACTION: SHOW OR HIDE SPRITES LAYER -----------------------------------------------
 void    Action_Switch_Layer_Sprites (void)
 {
+#ifdef RETROACHIEVEMENTS
+    if ((opt.Layer_Mask & LAYER_SPRITES) && !RA_WarnDisableHardcore("disable sprites"))
+        return;
+#endif
+
     opt.Layer_Mask ^= LAYER_SPRITES;
     gui_menu_toggle_check (menus_ID.layers, 0);
     if (opt.Layer_Mask & LAYER_SPRITES)
@@ -103,6 +108,11 @@ void    Action_Switch_Layer_Sprites (void)
 // ACTION: SHOW OR HIDE BACKGROUND LAYER --------------------------------------
 void    Action_Switch_Layer_Background (void)
 {
+#ifdef RETROACHIEVEMENTS
+    if ((opt.Layer_Mask & LAYER_BACKGROUND) && !RA_WarnDisableHardcore("disable the background"))
+        return;
+#endif
+
     opt.Layer_Mask ^= LAYER_BACKGROUND;
     gui_menu_toggle_check (menus_ID.layers, 1);
     if (opt.Layer_Mask & LAYER_BACKGROUND)

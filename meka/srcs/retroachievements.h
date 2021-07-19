@@ -9,6 +9,8 @@ bool RA_IsInitialized();
 void RA_AddMenu();
 bool RA_ProcessInputs();
 
+void RA_EnforceHardcoreRestrictions();
+
 void RA_LoadROM(ConsoleID consoleID);
 
 #endif __RETROACHIEVEMENTS_H_

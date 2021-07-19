@@ -428,6 +428,11 @@ int main(int argc, char **argv)
     Init_GUI               (); // Initialize Graphical User Interface
     FB_Init_2              (); // Finish initializing the file browser
 
+#ifdef RETROACHIEVEMENTS
+    if (RA_HardcoreModeIsActive())
+        RA_EnforceHardcoreRestrictions();
+#endif
+
     // Load ROM from command line if necessary
     Load_ROM_Command_Line();
 

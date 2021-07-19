@@ -31,6 +31,10 @@
 #include "sound/s_misc.h"
 #include "sound/sound_logging.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // FUNCTIONS
 //-----------------------------------------------------------------------------
@@ -42,6 +46,11 @@ static void Debug_ReloadSymbols_Callback(t_menu_event*)
 
 static void Debug_StepFrame_Callback(t_menu_event*)
 {
+#ifdef RETROACHIEVEMENTS
+    if (RA_HardcoreModeIsActive())
+        return;
+#endif
+
     g_machine_pause_requests = (g_machine_flags & MACHINE_PAUSED) ? 2 : 1;
 }
 

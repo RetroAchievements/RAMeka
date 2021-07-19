@@ -16,6 +16,10 @@
 #include <ctype.h>
 #include <string.h>
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 #ifdef MEKA_Z80_DEBUGGER
 
 //-----------------------------------------------------------------------------
@@ -1856,6 +1860,11 @@ void    Debugger_Switch()
     // Msg(MSGT_DEBUG, "Debugger_Switch()");
     if (!Debugger.enabled)
         return;
+
+#ifdef RETROACHIEVEMENTS
+    if (!Debugger.active && !RA_WarnDisableHardcore("debug"))
+        return;
+#endif
 
     Debugger.active ^= 1;
     gui_box_show(DebuggerApp.box, Debugger.active, true);

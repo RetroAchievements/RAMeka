@@ -10,6 +10,10 @@
 #include "desktop.h"
 #include "g_widget.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Definitions
 //-----------------------------------------------------------------------------
@@ -609,7 +613,13 @@ static void CheatFinder_CallbackClose(t_widget* w)
 
 void    CheatFinder_SwitchMainInstance()
 {
-    t_cheat_finder *app = g_CheatFinder_MainInstance;
+    t_cheat_finder* app = g_CheatFinder_MainInstance;
+
+#ifdef RETROACHIEVEMENTS
+    if (!app->active && !RA_WarnDisableHardcore("find cheats"))
+        return;
+#endif
+
     app->active ^= 1;
     gui_box_show(app->box, app->active, TRUE);
     gui_menu_toggle_check(menus_ID.tools, 5);
