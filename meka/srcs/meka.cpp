@@ -439,7 +439,14 @@ int main(int argc, char **argv)
     // Wait for Win32 console signal
     if (!ConsoleWaitForAnswer(true))
         return (0);
+
+#ifdef RETROACHIEVEMENTS
+    // Allegro's message loop does not contain TranslateMessage, so we need to
+    // keep the console message loop running for the RetroAchievement tool windows
+    ConsoleHide();
+#else
     ConsoleClose(); // Close Console
+#endif
 
     // Start main program loop
     // Everything runs from there.
@@ -448,6 +455,7 @@ int main(int argc, char **argv)
     // Z80_Opcodes_Usage_Print();
 
 #ifdef RETROACHIEVEMENTS
+    ConsoleClose();
     RA_Shutdown();
 #endif
 

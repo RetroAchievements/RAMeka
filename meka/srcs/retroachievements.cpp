@@ -75,10 +75,13 @@ static bool RA_MenuDispatch(ALLEGRO_DISPLAY* display, UINT message, WPARAM wPara
 {
     if (message == WM_COMMAND)
     {
-        if (LOWORD(wParam) >= IDM_RA_MENUSTART &&
-            LOWORD(wParam) < IDM_RA_MENUEND)
+        const LPARAM nDialogId = LOWORD(wParam);
+        if (nDialogId >= IDM_RA_MENUSTART && nDialogId < IDM_RA_MENUEND)
         {
-            RA_InvokeDialog(LOWORD(wParam));
+            // Allegro's message loop does not contain TranslateMessage, so we need to
+            // redirect the request to show a dialog to the Console window or the user
+            // won't be able to type in any of the tool window text fields.
+            PostMessage(ConsoleHWND(), WM_COMMAND, wParam, lParam);
             return true;
         }
     }
