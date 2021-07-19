@@ -9,7 +9,7 @@
 //#include "app_memview.h"
 //#include "app_cheatfinder.h"
 //#include "debugger.h"
-//#include "coleco.h"
+#include "coleco.h"
 
 
 static int GetMenuItemIndex(HMENU hMenu, const char* ItemName)
@@ -155,4 +155,48 @@ void RA_Initialize()
 
     // ensure the titlebar text matches the expected format
     RA_UpdateAppTitle("RAMEKA");
+}
+
+static unsigned char RAMeka_RAMByteReadFn(unsigned int nAddress) 
+{
+    return RAM[nAddress];
+}
+
+static void RAMeka_RAMByteWriteFn(unsigned int nAddress, unsigned char nVal)
+{
+    RAM[nAddress] = nVal;
+}
+
+static void RAMeka_RAMByteWriteFnColeco(unsigned int nAddress, unsigned char nVal)
+{
+    // special case for ColecoVision crazy mirroring
+    Write_Mapper_Coleco(0x6000 + nAddress, nVal);
+}
+
+void RA_LoadROM(ConsoleID consoleID)
+{
+    static ConsoleID currentConsoleID = UnknownConsoleID;
+    if (consoleID != currentConsoleID)
+    {
+        RA_ClearMemoryBanks();
+        RA_SetConsoleID(consoleID);
+
+        switch (consoleID)
+        {
+            case MasterSystem:
+                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x2000); // 8KB
+                break;
+            case GameGear:
+                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x2000); // 8KB
+                break;
+            case Colecovision:
+                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFnColeco, 0x400); // 1KB
+                break;
+            case SG1000:
+                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x400); // 1KB
+                break;
+        }
+    }
+
+    RA_OnLoadNewRom(ROM, tsms.Size_ROM);
 }
