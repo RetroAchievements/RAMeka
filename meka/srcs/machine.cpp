@@ -23,6 +23,10 @@
 #include "sound/fmunit.h"
 #include "sound/psg.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -663,6 +667,10 @@ void        Machine_Reset(void)
     #ifdef MEKA_Z80_DEBUGGER
         Debugger_MachineReset();
     #endif
+
+#ifdef RETROACHIEVEMENTS
+    RA_OnReset();
+#endif
 }
 
 //-----------------------------------------------------------------------------
