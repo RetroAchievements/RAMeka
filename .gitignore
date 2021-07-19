@@ -18,6 +18,7 @@ meka/RAMeka.exe
 meka/smsid.exe
 meka/smsid.ilk
 meka/srcs/obj
+meka/srcs/RA_BuildVer.h
 meka/srcs/projects/msvc/Meka.ncb
 meka/srcs/projects/msvc/.vs
 meka/srcs/projects/msvc/packages/
