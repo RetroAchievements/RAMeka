@@ -781,6 +781,7 @@ void    Messages_Close()
     list_free_no_elem(&Messages.Langs);
 }
 
+
 //-----------------------------------------------------------------------------
 // ConsoleInit (void)
 // Initialize text output console.

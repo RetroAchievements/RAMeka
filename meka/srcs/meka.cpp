@@ -46,6 +46,10 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Globals
 //-----------------------------------------------------------------------------
@@ -331,6 +335,10 @@ static void Init_GUI(void)
 {
     ConsolePrintf ("%s\n", Msg_Get(MSG_Init_GUI));
     GUI_Init();
+
+#ifdef RETROACHIEVEMENTS
+    RA_Initialize();
+#endif
 }
 
 // MAIN FUNCTION --------------------------------------------------------------
@@ -433,6 +441,10 @@ int main(int argc, char **argv)
     // Z80_Opcodes_Usage_Reset();
     Main_Loop(); 
     // Z80_Opcodes_Usage_Print();
+
+#ifdef RETROACHIEVEMENTS
+    RA_Shutdown();
+#endif
 
     // Shutting down emulator...
     g_env.state = MEKA_STATE_SHUTDOWN;

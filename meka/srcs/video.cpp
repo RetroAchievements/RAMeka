@@ -19,6 +19,10 @@
 #include "video.h"
 #include "vmachine.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -164,6 +168,13 @@ static int Video_ChangeVideoMode(t_video_driver* driver, int w, int h, bool full
     }
 
     al_register_event_source(g_display_event_queue, al_get_display_event_source(g_display));
+
+#ifdef RETROACHIEVEMENTS
+    RA_UpdateHWnd(al_get_win_window_handle(g_display));
+
+    if (!fullscreen)
+        RA_AddMenu();
+#endif
 
     g_video.res_x = w;
     g_video.res_y = h;

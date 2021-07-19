@@ -50,6 +50,9 @@
       <UniqueIdentifier>{a733b7ed-c60b-481a-b5d2-841729f0bd9f}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Srcs\RetroAchievements">
+      <UniqueIdentifier>{c630b77d-3a1e-4e48-8c37-99753103b3c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\changes.txt">
@@ -444,6 +447,12 @@
     <ClCompile Include="..\..\debugger.cpp">
       <Filter>Srcs\Debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\RAInterface\RA_Interface.cpp">
+      <Filter>Srcs\RetroAchievements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\retroachievements.cpp">
+      <Filter>Srcs\RetroAchievements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\allegro4to5.h">
@@ -805,6 +814,9 @@
     </ClInclude>
     <ClInclude Include="..\..\debugger.h">
       <Filter>Srcs\Debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\retroachievements.h">
+      <Filter>Srcs\RetroAchievements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
