@@ -164,16 +164,17 @@ void        SaveState_Save()
     {
         result = Save_Game_MSV(f);
         fclose (f);
+
+#ifdef RETROACHIEVEMENTS
+        if (result == 1)
+            RA_OnSaveState(buf);
+#endif
     }
 
     StrPath_RemoveDirectory (buf);
     switch (result)
     {
-    case 1:
-#ifdef RETROACHIEVEMENTS
-        RA_OnSaveState(buf);
-#endif
-        Msg(MSGT_USER, Msg_Get(MSG_Save_Success), buf);
+    case 1: Msg(MSGT_USER, Msg_Get(MSG_Save_Success), buf);
         break;
     case 2: Msg(MSGT_USER, Msg_Get(MSG_Save_Error), buf);
         break;
@@ -222,16 +223,17 @@ void        SaveState_Load()
     {
         result = Load_Game_MSV (f);
         fclose (f);
+
+#ifdef RETROACHIEVEMENTS
+        if (result == 1)
+            RA_OnLoadState(buf);
+#endif
     }
 
     StrPath_RemoveDirectory (buf);
     switch (result)
     {
-    case 1:
-#ifdef RETROACHIEVEMENTS
-        RA_OnLoadState(buf);
-#endif
-        Msg(MSGT_USER, Msg_Get(MSG_Load_Success), buf);
+    case 1: Msg(MSGT_USER, Msg_Get(MSG_Load_Success), buf);
         Load_Game_Fixup();
         break;
     case 2: Msg(MSGT_USER, Msg_Get(MSG_Load_Error), buf);         break;
