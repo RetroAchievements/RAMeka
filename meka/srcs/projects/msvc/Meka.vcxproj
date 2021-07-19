@@ -80,7 +80,7 @@
     <OutDir>..\..\..\objs\meka\$(Configuration)\</OutDir>
     <IntDir>..\..\..\objs\meka\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>RAMeka</TargetName>
+    <TargetName>mekaw</TargetName>
     <CustomBuildAfterTargets>Link</CustomBuildAfterTargets>
     <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
   </PropertyGroup>
@@ -88,7 +88,7 @@
     <OutDir>..\..\..\objs\meka\$(Configuration)\</OutDir>
     <IntDir>..\..\..\objs\meka\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>mekaw</TargetName>
+    <TargetName>RAMeka</TargetName>
     <CustomBuildAfterTargets>Link</CustomBuildAfterTargets>
     <Allegro_LibraryType>StaticMonolithRelease</Allegro_LibraryType>
   </PropertyGroup>

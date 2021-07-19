@@ -27,6 +27,10 @@
 #include "vmachine.h"
 #include "sound/sound_logging.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -79,6 +83,12 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
     //Inputs_CFG_Map_Change_Update();
     //if (Inputs_CFG.active)
     //    Inputs_CFG.Box->update();
+
+#ifdef RETROACHIEVEMENTS
+    // ignore all UI shortcuts while the overlay is visible except F12
+    if (RA_ProcessInputs() && !Inputs_KeyDown(ALLEGRO_KEY_F12))
+        return;
+#endif
 
     switch (g_keyboard_modifiers & (ALLEGRO_KEYMOD_CTRL | ALLEGRO_KEYMOD_ALT | ALLEGRO_KEYMOD_SHIFT))
     {
@@ -138,7 +148,13 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
 
             // Hard Pause
             if (Inputs_KeyPressed (ALLEGRO_KEY_F12, FALSE))
+            {
                 g_machine_pause_requests = 1;
+
+#ifdef RETROACHIEVEMENTS
+                RA_SetPaused(!(g_machine_flags & MACHINE_PAUSED));
+#endif
+            }
         }
         break;
     case ALLEGRO_KEYMOD_CTRL:

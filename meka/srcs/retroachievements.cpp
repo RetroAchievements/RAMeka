@@ -9,6 +9,7 @@
 //#include "app_memview.h"
 //#include "app_cheatfinder.h"
 //#include "debugger.h"
+//#include "inputs.h"
 #include "coleco.h"
 
 static bool isInitialized = false;
@@ -206,4 +207,31 @@ void RA_LoadROM(ConsoleID consoleID)
     }
 
     RA_OnLoadNewRom(ROM, tsms.Size_ROM);
+}
+
+bool RA_ProcessInputs()
+{
+    if (!RA_IsOverlayFullyVisible())
+        return false;
+
+    for (int src_index = 0; src_index < Inputs.Sources_Max; src_index++)
+    {
+        const t_input_src* src = Inputs.Sources[src_index];
+        if (src->player == 0 && src->enabled)
+        {
+            ControllerInput input;
+            input.m_bUpPressed = src->Map[INPUT_MAP_DIGITAL_UP].current_value ? 1 : 0;
+            input.m_bDownPressed = src->Map[INPUT_MAP_DIGITAL_DOWN].current_value ? 1 : 0;
+            input.m_bLeftPressed = src->Map[INPUT_MAP_DIGITAL_LEFT].current_value ? 1 : 0;
+            input.m_bRightPressed = src->Map[INPUT_MAP_DIGITAL_RIGHT].current_value ? 1 : 0;
+            input.m_bConfirmPressed = src->Map[INPUT_MAP_BUTTON1].current_value ? 1 : 0;
+            input.m_bCancelPressed = src->Map[INPUT_MAP_BUTTON2].current_value ? 1 : 0;
+            input.m_bQuitPressed = src->Map[INPUT_MAP_PAUSE_START].current_value ? 1 : 0;
+
+            RA_NavigateOverlay(&input);
+            break;
+        }
+    }
+
+    return true;
 }

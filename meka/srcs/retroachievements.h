@@ -7,6 +7,7 @@
 void RA_Initialize();
 bool RA_IsInitialized();
 void RA_AddMenu();
+bool RA_ProcessInputs();
 
 void RA_LoadROM(ConsoleID consoleID);
 
