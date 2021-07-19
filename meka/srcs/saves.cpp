@@ -17,6 +17,10 @@
 #include "sound/fmunit.h"
 #include "sound/psg.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
@@ -165,7 +169,11 @@ void        SaveState_Save()
     StrPath_RemoveDirectory (buf);
     switch (result)
     {
-    case 1: Msg(MSGT_USER, Msg_Get(MSG_Save_Success), buf);
+    case 1:
+#ifdef RETROACHIEVEMENTS
+        RA_OnSaveState(buf);
+#endif
+        Msg(MSGT_USER, Msg_Get(MSG_Save_Success), buf);
         break;
     case 2: Msg(MSGT_USER, Msg_Get(MSG_Save_Error), buf);
         break;
@@ -181,6 +189,11 @@ void        SaveState_Load()
         Msg(MSGT_USER, "%s", Msg_Get(MSG_No_ROM));
         return;
     }
+
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("load a state"))
+        return;
+#endif
 
     // If loading while in BIOS, disable BIOS and switch to game
     if ((g_machine_flags & MACHINE_NOT_IN_BIOS) == 0)
@@ -214,7 +227,11 @@ void        SaveState_Load()
     StrPath_RemoveDirectory (buf);
     switch (result)
     {
-    case 1: Msg(MSGT_USER, Msg_Get(MSG_Load_Success), buf);
+    case 1:
+#ifdef RETROACHIEVEMENTS
+        RA_OnLoadState(buf);
+#endif
+        Msg(MSGT_USER, Msg_Get(MSG_Load_Success), buf);
         Load_Game_Fixup();
         break;
     case 2: Msg(MSGT_USER, Msg_Get(MSG_Load_Error), buf);         break;
