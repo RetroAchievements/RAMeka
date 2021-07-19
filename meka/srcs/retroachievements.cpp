@@ -10,6 +10,7 @@
 #include "app_memview.h"
 #include "coleco.h"
 #include "debugger.h"
+#include "mappers.h"
 #include "vmachine.h"
 
 static bool isInitialized = false;
@@ -208,31 +209,112 @@ static void RAMeka_RAMByteWriteFnColeco(unsigned int nAddress, unsigned char nVa
     Write_Mapper_Coleco(0x6000 + nAddress, nVal);
 }
 
-void RA_LoadROM(ConsoleID consoleID)
+static unsigned char RAMeka_RAMByteReadFnDahjee(unsigned int nAddress)
 {
-    static ConsoleID currentConsoleID = UnknownConsoleID;
-    if (consoleID != currentConsoleID)
+    if (nAddress < 0x2000)
+    {
+        // $C000-$DFFF = Normal memory - appears _after_ Dahjee expansion memory
+        // most of this block is not used by this mapper
+        return RAM[nAddress + 0x2000];
+    }
+    else
+    {
+        // $2000-$3FFF = Dahjee expansion memory - appears _first_ in RAM[]
+        return RAM[nAddress - 0x2000];
+    }
+}
+
+static void RAMeka_RAMByteWriteFnDahjee(unsigned int nAddress, unsigned char nVal)
+{
+    if (nAddress < 0x2000)
+    {
+        // $C000-$DFFF = Normal memory - appears _after_ Dahjee expansion memory
+        RAM[nAddress + 0x2000] = nVal;
+    }
+    else
+    {
+        // $2000-$3FFF = Dahjee expansion memory - appears _first_ in RAM[]
+        RAM[nAddress - 0x2000] = nVal;
+    }
+}
+
+static unsigned char RAMeka_RAMByteReadFn32kRAM(unsigned int nAddress)
+{
+    if (nAddress < 0x2000)
+    {
+        // $C000-$DFFF = Normal memory - appears in third page
+        return RAM[nAddress + 0x4000];
+    }
+    else if (nAddress < 0x4000)
+    {
+        // $2000-$3FFF = expansion memory - appears in second page
+        return RAM[nAddress];
+    }
+    else
+    {
+        // $8000-$9FFF = Othello (2K)/The Castle (8K) - appears _first_ in RAM[]
+        return RAM[nAddress - 0x4000];
+    }
+}
+
+static void RAMeka_RAMByteWriteFn32kRAM(unsigned int nAddress, unsigned char nVal)
+{
+    if (nAddress < 0x2000)
+    {
+        // $C000-$DFFF = Normal memory - appears in third page
+        RAM[nAddress + 0x4000] = nVal;
+    }
+    else if (nAddress < 0x4000)
+    {
+        // $2000-$3FFF = expansion memory - appears in second page
+        RAM[nAddress] = nVal;
+    }
+    else
+    {
+        // $8000-$9FFF = Othello (2K)/The Castle (8K) - appears _first_ in RAM[]
+        RAM[nAddress - 0x4000] = nVal;
+    }
+}
+
+void RA_UpdateMemoryMap()
+{
+    static int mapper = MAPPER_Auto;
+    if (mapper != g_machine.mapper)
     {
         RA_ClearMemoryBanks();
-        RA_SetConsoleID(consoleID);
 
-        switch (consoleID)
+        mapper = g_machine.mapper;
+        switch (mapper)
         {
-            case MasterSystem:
+            case MAPPER_Standard: // MasterSystem, GameGear
                 RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x2000); // 8KB
                 break;
-            case GameGear:
-                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x2000); // 8KB
-                break;
-            case Colecovision:
+
+            case MAPPER_ColecoVision:
                 RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFnColeco, 0x400); // 1KB
                 break;
-            case SG1000:
-                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x400); // 1KB
+
+            case MAPPER_SG1000:
+                // base SG-1000 only has 1KB of RAM that's mirrored from $C000-$DFFF. 
+                // Expansion mode B exposes a full 8KB of RAM from $C000-$DFFF.
+                // Meka exposes 4KB for this mapper (see Mapper_Get_RAM_Infos) - reasons unknown
+                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x1000); // 1KB
+                break;
+            case MAPPER_SG1000_Taiwan_MSX_Adapter_TypeA:
+                // 8KB RAM from 0x2000->0x3FFF + regular 2KB ram in 0xC000-0xFFFF range
+                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFnDahjee, RAMeka_RAMByteWriteFnDahjee, 0x4000); // 16KB
+                break;
+            case MAPPER_32kRAM:
+                // Othello mapper exposes 8KB at $8000, and The Castle exposes 32KB at $8000
+                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn32kRAM, RAMeka_RAMByteWriteFn32kRAM, 0x6000);
                 break;
         }
     }
+}
 
+void RA_LoadROM(ConsoleID consoleID)
+{
+    RA_SetConsoleID(consoleID);
     RA_OnLoadNewRom(ROM, tsms.Size_ROM);
 }
 

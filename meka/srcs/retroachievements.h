@@ -12,5 +12,6 @@ bool RA_ProcessInputs();
 void RA_EnforceHardcoreRestrictions();
 
 void RA_LoadROM(ConsoleID consoleID);
+void RA_UpdateMemoryMap();
 
 #endif __RETROACHIEVEMENTS_H_

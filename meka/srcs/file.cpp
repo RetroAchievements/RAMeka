@@ -662,6 +662,10 @@ void    Load_ROM_Misc (int reset)
         Machine_ON();
     }
 
+#ifdef RETROACHIEVEMENTS
+    RA_UpdateMemoryMap();
+#endif
+
     if (g_machine.driver_id == DRV_SF7000)
         FDC765_Disk_Insert(0, ROM, tsms.Size_ROM);
 
