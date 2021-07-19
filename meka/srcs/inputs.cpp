@@ -161,7 +161,7 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
         {
             // Hard Reset
             if (!sk1100_pressed && Inputs_KeyPressed(ALLEGRO_KEY_BACKSPACE, TRUE)) // Note: eat backspace to avoid triggering software reset as well
-                Machine_Reset();
+                Machine_User_Reset();
 
             // Background Display
             if (Inputs_KeyPressed (ALLEGRO_KEY_F11, FALSE)) 
@@ -242,7 +242,7 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
 
                // Hard Reset
                if (Inputs_KeyPressed(ALLEGRO_KEY_BACKSPACE, TRUE))  // Note: eat backspace to avoid triggering software reset as well
-                   Machine_Reset();
+                   Machine_User_Reset();
 
                // GUI fullscreen/windowed
                 if (Inputs_KeyPressed (ALLEGRO_KEY_ENTER, FALSE))
