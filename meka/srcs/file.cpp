@@ -604,28 +604,6 @@ int             Load_ROM_Main ()
     // Now done in Load_ROM_xxx()
     // g_machine.driver_id = drv_get_from_ext (file.temp);
 
-#ifdef RETROACHIEVEMENTS
-    if (err == MEKA_ERR_OK)
-    {
-        switch (g_machine.driver_id)
-        {
-            case DRV_SMS:
-                RA_LoadROM(MasterSystem);
-                break;
-            case DRV_GG:
-                RA_LoadROM(GameGear);
-                break;
-            case DRV_COLECO:
-                RA_LoadROM(Colecovision);
-                break;
-            case DRV_SG1000:
-                RA_LoadROM(SG1000);
-                break;
-        }
-    }
-#endif
-
-
     return (meka_errno = err);
 }
 
@@ -653,6 +631,24 @@ void    Load_ROM_Misc (int reset)
     // Initialize patching system for this ROM and apply
     Patches_ROM_Initialize();
     Patches_ROM_Apply();
+
+#ifdef RETROACHIEVEMENTS
+    switch (g_machine.driver_id)
+    {
+        case DRV_SMS:
+            RA_LoadROM(MasterSystem);
+            break;
+        case DRV_GG:
+            RA_LoadROM(GameGear);
+            break;
+        case DRV_COLECO:
+            RA_LoadROM(Colecovision);
+            break;
+        case DRV_SG1000:
+            RA_LoadROM(SG1000);
+            break;
+    }
+#endif
 
     // Set driver
     drv_set (g_machine.driver_id);
