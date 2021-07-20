@@ -186,7 +186,7 @@ void RA_Initialize()
 
     // add a placeholder menu item and start the login process - the menu will be updated when the login completes
     RebuildMenu();
-    RA_AttemptLogin(true);
+    RA_AttemptLogin(false);
 
     // ensure the titlebar text matches the expected format
     RA_UpdateAppTitle("");
