@@ -13,6 +13,8 @@ void    Action_Switch_Flickering_Auto   (void);
 void    Action_Switch_Flickering_Yes    (void);
 void    Action_Switch_Flickering_No     (void);
 
+void    Action_Switch_Machine_Pause     (void);
+
 void    Action_Save_Game                (void);
 void    Action_Load_Game                (void);
 

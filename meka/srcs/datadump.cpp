@@ -7,6 +7,10 @@
 #include "mappers.h"
 #include "datadump.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -319,6 +323,11 @@ void        DataDump_RAM (void)
 {
     int     len;
     int     start_addr;
+
+#ifdef RETROACHIEVEMENTS
+    if (RA_HardcoreModeIsActive())
+        return;
+#endif
 
     Mapper_Get_RAM_Infos (&len, &start_addr);
     if (DataDump.Mode == DATADUMP_MODE_RAW)

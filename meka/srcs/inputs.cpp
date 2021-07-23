@@ -27,6 +27,10 @@
 #include "vmachine.h"
 #include "sound/sound_logging.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -79,6 +83,12 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
     //Inputs_CFG_Map_Change_Update();
     //if (Inputs_CFG.active)
     //    Inputs_CFG.Box->update();
+
+#ifdef RETROACHIEVEMENTS
+    // ignore all UI shortcuts while the overlay is visible except F12
+    if (RA_ProcessInputs() && !Inputs_KeyDown(ALLEGRO_KEY_F12))
+        return;
+#endif
 
     switch (g_keyboard_modifiers & (ALLEGRO_KEYMOD_CTRL | ALLEGRO_KEYMOD_ALT | ALLEGRO_KEYMOD_SHIFT))
     {
@@ -138,14 +148,20 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
 
             // Hard Pause
             if (Inputs_KeyPressed (ALLEGRO_KEY_F12, FALSE))
+            {
                 g_machine_pause_requests = 1;
+
+#ifdef RETROACHIEVEMENTS
+                RA_SetPaused(!(g_machine_flags & MACHINE_PAUSED));
+#endif
+            }
         }
         break;
     case ALLEGRO_KEYMOD_CTRL:
         {
             // Hard Reset
             if (!sk1100_pressed && Inputs_KeyPressed(ALLEGRO_KEY_BACKSPACE, TRUE)) // Note: eat backspace to avoid triggering software reset as well
-                Machine_Reset();
+                Machine_User_Reset();
 
             // Background Display
             if (Inputs_KeyPressed (ALLEGRO_KEY_F11, FALSE)) 
@@ -153,7 +169,12 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
 
             // Next frame (pause hack)
             if (Inputs_KeyPressed (ALLEGRO_KEY_F12, FALSE))
-                g_machine_pause_requests = (g_machine_flags & MACHINE_PAUSED) ? 2 : 1;
+            {
+#ifdef RETROACHIEVEMENTS
+                if (!RA_HardcoreModeIsActive())
+#endif
+                    g_machine_pause_requests = (g_machine_flags & MACHINE_PAUSED) ? 2 : 1;
+            }
 
             // Load State & Continue
             if (Inputs_KeyPressed(ALLEGRO_KEY_F7, FALSE))
@@ -221,7 +242,7 @@ void        Inputs_Check_GUI (bool sk1100_pressed)
 
                // Hard Reset
                if (Inputs_KeyPressed(ALLEGRO_KEY_BACKSPACE, TRUE))  // Note: eat backspace to avoid triggering software reset as well
-                   Machine_Reset();
+                   Machine_User_Reset();
 
                // GUI fullscreen/windowed
                 if (Inputs_KeyPressed (ALLEGRO_KEY_ENTER, FALSE))

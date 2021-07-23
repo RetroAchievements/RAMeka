@@ -15,6 +15,10 @@
 #include "video_m2.h"
 #include "sound/psg.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -200,6 +204,11 @@ word    Loop_Coleco (void)
         // Note: refresh screen may reset the system, so you can NOT change
         // the status AFTER it, or else it would screw the newly emulated code
         Video_RefreshScreen();
+
+#ifdef RETROACHIEVEMENTS
+        RA_DoAchievementsFrame();
+#endif
+
         if ((opt.Force_Quit) || (CPU_Loop_Stop))
             Macro_Stop_CPU;
     }

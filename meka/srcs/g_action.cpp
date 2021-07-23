@@ -10,6 +10,11 @@
 #include "db.h"
 #include "video.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#include "vmachine.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
@@ -18,6 +23,11 @@
 // FIXME-DEPTH: Ressources (machines, icons) not faded out
 void    Action_Quit()
 {
+#ifdef RETROACHIEVEMENTS
+    if (!RA_ConfirmLoadNewRom(true))
+        return;
+#endif
+
     Msg(MSGT_STATUS_BAR, "%s", Msg_Get(MSG_Quit));
 
     // Shut up sound while fading
@@ -79,6 +89,11 @@ void    Action_Quit()
 // ACTION: SHOW OR HIDE SPRITES LAYER -----------------------------------------------
 void    Action_Switch_Layer_Sprites (void)
 {
+#ifdef RETROACHIEVEMENTS
+    if ((opt.Layer_Mask & LAYER_SPRITES) && !RA_WarnDisableHardcore("disable sprites"))
+        return;
+#endif
+
     opt.Layer_Mask ^= LAYER_SPRITES;
     gui_menu_toggle_check (menus_ID.layers, 0);
     if (opt.Layer_Mask & LAYER_SPRITES)
@@ -94,6 +109,11 @@ void    Action_Switch_Layer_Sprites (void)
 // ACTION: SHOW OR HIDE BACKGROUND LAYER --------------------------------------
 void    Action_Switch_Layer_Background (void)
 {
+#ifdef RETROACHIEVEMENTS
+    if ((opt.Layer_Mask & LAYER_BACKGROUND) && !RA_WarnDisableHardcore("disable the background"))
+        return;
+#endif
+
     opt.Layer_Mask ^= LAYER_BACKGROUND;
     gui_menu_toggle_check (menus_ID.layers, 1);
     if (opt.Layer_Mask & LAYER_BACKGROUND)
@@ -154,3 +174,11 @@ void    Action_Switch_Mode(void)
 
 //-----------------------------------------------------------------------------
 
+void    Action_Switch_Machine_Pause(void)
+{
+    Machine_Pause();
+
+#ifdef RETROACHIEVEMENTS
+    RA_SetPaused(g_machine_flags & MACHINE_PAUSED);
+#endif
+}

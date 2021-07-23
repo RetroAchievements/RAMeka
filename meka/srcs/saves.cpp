@@ -17,6 +17,10 @@
 #include "sound/fmunit.h"
 #include "sound/psg.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
@@ -160,6 +164,11 @@ void        SaveState_Save()
     {
         result = Save_Game_MSV(f);
         fclose (f);
+
+#ifdef RETROACHIEVEMENTS
+        if (result == 1)
+            RA_OnSaveState(buf);
+#endif
     }
 
     StrPath_RemoveDirectory (buf);
@@ -181,6 +190,11 @@ void        SaveState_Load()
         Msg(MSGT_USER, "%s", Msg_Get(MSG_No_ROM));
         return;
     }
+
+#ifdef RETROACHIEVEMENTS
+    if (!RA_WarnDisableHardcore("load a state"))
+        return;
+#endif
 
     // If loading while in BIOS, disable BIOS and switch to game
     if ((g_machine_flags & MACHINE_NOT_IN_BIOS) == 0)
@@ -209,6 +223,11 @@ void        SaveState_Load()
     {
         result = Load_Game_MSV (f);
         fclose (f);
+
+#ifdef RETROACHIEVEMENTS
+        if (result == 1)
+            RA_OnLoadState(buf);
+#endif
     }
 
     StrPath_RemoveDirectory (buf);

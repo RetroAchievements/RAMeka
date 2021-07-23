@@ -46,6 +46,10 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Globals
 //-----------------------------------------------------------------------------
@@ -331,6 +335,10 @@ static void Init_GUI(void)
 {
     ConsolePrintf ("%s\n", Msg_Get(MSG_Init_GUI));
     GUI_Init();
+
+#ifdef RETROACHIEVEMENTS
+    RA_Initialize();
+#endif
 }
 
 // MAIN FUNCTION --------------------------------------------------------------
@@ -420,19 +428,36 @@ int main(int argc, char **argv)
     Init_GUI               (); // Initialize Graphical User Interface
     FB_Init_2              (); // Finish initializing the file browser
 
+#ifdef RETROACHIEVEMENTS
+    if (RA_HardcoreModeIsActive())
+        RA_EnforceHardcoreRestrictions();
+#endif
+
     // Load ROM from command line if necessary
     Load_ROM_Command_Line();
 
     // Wait for Win32 console signal
     if (!ConsoleWaitForAnswer(true))
         return (0);
+
+#ifdef RETROACHIEVEMENTS
+    // Allegro's message loop does not contain TranslateMessage, so we need to
+    // keep the console message loop running for the RetroAchievement tool windows
+    ConsoleHide();
+#else
     ConsoleClose(); // Close Console
+#endif
 
     // Start main program loop
     // Everything runs from there.
     // Z80_Opcodes_Usage_Reset();
     Main_Loop(); 
     // Z80_Opcodes_Usage_Print();
+
+#ifdef RETROACHIEVEMENTS
+    ConsoleClose();
+    RA_Shutdown();
+#endif
 
     // Shutting down emulator...
     g_env.state = MEKA_STATE_SHUTDOWN;

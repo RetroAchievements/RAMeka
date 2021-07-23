@@ -11,6 +11,10 @@
 #include "projects/msvc/resource.h"
 #endif
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Forward declaration
 //-----------------------------------------------------------------------------
@@ -781,6 +785,7 @@ void    Messages_Close()
     list_free_no_elem(&Messages.Langs);
 }
 
+
 //-----------------------------------------------------------------------------
 // ConsoleInit (void)
 // Initialize text output console.
@@ -808,6 +813,14 @@ void            ConsoleClose (void)
     // Close Win32 console
     #ifdef ARCH_WIN32
         ConsoleWin32_Close(&ConsoleWin32);
+    #endif
+}
+
+void            ConsoleHide (void)
+{
+    // Hide Win32 console
+    #ifdef ARCH_WIN32
+        ConsoleWin32_Hide(&ConsoleWin32);
     #endif
 }
 
@@ -944,6 +957,11 @@ void            Msg(int attr, const char *format, ...)
 //-----------------------------------------------------------------------------
 
 #ifdef ARCH_WIN32
+
+HWND           ConsoleHWND (void)
+{
+    return ConsoleWin32.hwnd;
+}
 
 static int     ConsoleWin32_Initialize(t_console_win32 *c, HINSTANCE hInstance, HWND hWndParent)
 {
@@ -1124,6 +1142,16 @@ static int CALLBACK ConsoleWin32_DialogProc(HWND hDlg, UINT message, WPARAM wPar
                     PostQuitMessage(0);
                     break;
                 }
+#ifdef RETROACHIEVEMENTS
+            default:
+                {
+                    const LPARAM nDialogId = LOWORD(wParam);
+                    if (nDialogId >= IDM_RA_MENUSTART && nDialogId < IDM_RA_MENUEND)
+                        RA_InvokeDialog(nDialogId);
+
+                    break;
+                }
+#endif
             }
 
             // ...

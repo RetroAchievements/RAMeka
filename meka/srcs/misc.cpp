@@ -194,8 +194,10 @@ void    Quit_Msg(const char *format, ...)
             ConsoleWaitForAnswer(FALSE);
         else
         {
+#ifndef RETROACHIEVEMENTS
             // Note: we don't use allegro_message() because Allegro might be unitialized here
             MessageBox (NULL, buffer, Msg_Get(MSG_Window_Title), MB_OK | MB_ICONINFORMATION);
+#endif
         }
     }
 #else

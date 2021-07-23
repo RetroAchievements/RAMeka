@@ -12,6 +12,10 @@
 #include "video_m5.h"
 #include "debugger.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -61,6 +65,11 @@ word    Loop_SMS (void)
             //   Check_Sprites_Collision_Modes_1_2_3();
             // Msg(MSGT_DEBUG, "Loop_SMS: Video_RefreshScreen()");
             Video_RefreshScreen();
+
+#ifdef RETROACHIEVEMENTS
+            RA_DoAchievementsFrame();
+#endif
+
             if ((opt.Force_Quit) || (CPU_Loop_Stop))
                 Macro_Stop_CPU;
         }

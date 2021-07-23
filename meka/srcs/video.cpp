@@ -19,6 +19,10 @@
 #include "video.h"
 #include "vmachine.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -165,13 +169,25 @@ static int Video_ChangeVideoMode(t_video_driver* driver, int w, int h, bool full
 
     al_register_event_source(g_display_event_queue, al_get_display_event_source(g_display));
 
+#ifdef RETROACHIEVEMENTS
+    RA_UpdateHWnd(al_get_win_window_handle(g_display));
+
+    if (!fullscreen)
+        RA_AddMenu();
+#endif
+
     g_video.res_x = w;
     g_video.res_y = h;
     g_video.refresh_rate_requested = refresh_rate;
     Video_GameMode_UpdateBounds();
 
     // Window title
-    al_set_window_title(g_display, Msg_Get(MSG_Window_Title));
+#ifdef RETROACHIEVEMENTS
+    if (RA_IsInitialized())
+        RA_UpdateAppTitle("");
+    else
+#endif
+        al_set_window_title(g_display, Msg_Get(MSG_Window_Title));
 
     // Recreate all video buffers
     Video_CreateVideoBuffers();
@@ -386,6 +402,10 @@ void    Video_UpdateEvents()
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             if (g_env.state == MEKA_STATE_INIT || g_env.state == MEKA_STATE_SHUTDOWN)
                 break;
+#ifdef RETROACHIEVEMENTS
+            if (!RA_ConfirmLoadNewRom(true))
+                break;
+#endif
             opt.Force_Quit = TRUE;
             break;
         case ALLEGRO_EVENT_DISPLAY_SWITCH_IN:

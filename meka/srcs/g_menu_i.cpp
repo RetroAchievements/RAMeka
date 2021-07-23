@@ -31,6 +31,10 @@
 #include "sound/s_misc.h"
 #include "sound/sound_logging.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // FUNCTIONS
 //-----------------------------------------------------------------------------
@@ -42,6 +46,11 @@ static void Debug_ReloadSymbols_Callback(t_menu_event*)
 
 static void Debug_StepFrame_Callback(t_menu_event*)
 {
+#ifdef RETROACHIEVEMENTS
+    if (RA_HardcoreModeIsActive())
+        return;
+#endif
+
     g_machine_pause_requests = (g_machine_flags & MACHINE_PAUSED) ? 2 : 1;
 }
 
@@ -115,8 +124,8 @@ void    gui_menus_init()
     menus_ID.power    = menu_add_menu (menus_ID.machine, Msg_Get(MSG_Menu_Machine_Power),  MENU_ITEM_FLAG_ACTIVE);
     menus_ID.region   = menu_add_menu (menus_ID.machine, Msg_Get(MSG_Menu_Machine_Region), MENU_ITEM_FLAG_ACTIVE);
     menus_ID.tvtype   = menu_add_menu (menus_ID.machine, Msg_Get(MSG_Menu_Machine_TVType), MENU_ITEM_FLAG_ACTIVE);
-    menu_add_item     (menus_ID.machine,  Msg_Get(MSG_Menu_Machine_PauseEmulation),        "F12",           MENU_ITEM_FLAG_ACTIVE, (t_menu_callback)Machine_Pause, NULL);
-    menu_add_item     (menus_ID.machine,  Msg_Get(Msg_Menu_Machine_ResetEmulation),        "Alt+Backspace", MENU_ITEM_FLAG_ACTIVE, (t_menu_callback)Machine_Reset, NULL);
+    menu_add_item     (menus_ID.machine,  Msg_Get(MSG_Menu_Machine_PauseEmulation),        "F12",           MENU_ITEM_FLAG_ACTIVE, (t_menu_callback)Action_Switch_Machine_Pause, NULL);
+    menu_add_item     (menus_ID.machine,  Msg_Get(Msg_Menu_Machine_ResetEmulation),        "Alt+Backspace", MENU_ITEM_FLAG_ACTIVE, (t_menu_callback)Machine_User_Reset, NULL);
     // MACHINE -> POWER
     menu_add_item     (menus_ID.power,    Msg_Get(MSG_Menu_Machine_Power_On),              NULL,            MENU_ITEM_FLAG_ACTIVE, (t_menu_callback)Machine_ON, NULL);
     menu_add_item     (menus_ID.power,    Msg_Get(MSG_Menu_Machine_Power_Off),             NULL,            MENU_ITEM_FLAG_ACTIVE /* | AM_Checked */, (t_menu_callback)Machine_OFF, NULL);

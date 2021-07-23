@@ -17,6 +17,7 @@ void    Machine_Pause               (void);
 void    Machine_Debug_Start         (void);
 void    Machine_Debug_Stop          (void);
 void    Machine_Reset               (void);
+void    Machine_User_Reset          (void);
 
 void    Machine_Set_Mapper          (void);
 void    Machine_Set_Mapping         (void);

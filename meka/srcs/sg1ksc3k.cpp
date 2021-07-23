@@ -12,6 +12,10 @@
 #include "video_m2.h"
 #include "debugger.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
@@ -60,6 +64,10 @@ word    Loop_SG1000_SC3000 (void)
         // the status AFTER it, or else it would screw the newly emulated code
         // Msg(MSGT_DEBUG, "Loop_SG1000_SC3000: Video_RefreshScreen()");
         Video_RefreshScreen();
+
+#ifdef RETROACHIEVEMENTS
+        RA_DoAchievementsFrame();
+#endif
 
         if ((opt.Force_Quit) || (CPU_Loop_Stop))
             Macro_Stop_CPU;

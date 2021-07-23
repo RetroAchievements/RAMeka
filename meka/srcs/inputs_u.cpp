@@ -273,7 +273,7 @@ void    Inputs_Emulation_Update(bool running)
                 // If SK-1100 is not emulated then process with an hardware Reset
                 // Note: this test is invalid in case Reset was pressed from a pad, it will cancel pressing reset from the pad
                 if (Inputs.SK1100_Enabled == FALSE)
-                    Machine_Reset();
+                    Machine_User_Reset();
             }
         }
     }

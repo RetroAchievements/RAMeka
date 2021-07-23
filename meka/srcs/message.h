@@ -506,9 +506,14 @@ void        Msg(int attr, const char *format, ...) FORMAT_PRINTF (2);
 
 void    ConsoleInit         (void);
 void    ConsoleClose        (void);
+void    ConsoleHide         (void);
 void    ConsolePrintf       (const char *format, ...) FORMAT_PRINTF (1);
 void    ConsolePrint        (const char *msg);
 void    ConsoleEnablePause  (void);
 bool    ConsoleWaitForAnswer(bool allow_run);
+
+#ifdef ARCH_WIN32
+HWND    ConsoleHWND         (void);
+#endif
 
 //-----------------------------------------------------------------------------
