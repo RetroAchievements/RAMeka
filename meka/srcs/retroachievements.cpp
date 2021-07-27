@@ -10,6 +10,7 @@
 #include "app_memview.h"
 #include "coleco.h"
 #include "debugger.h"
+#include "fskipper.h"
 #include "mappers.h"
 #include "vmachine.h"
 
@@ -34,6 +35,13 @@ void RA_EnforceHardcoreRestrictions()
 
     if (!(opt.Layer_Mask & LAYER_BACKGROUND))
         Action_Switch_Layer_Background();
+
+    if (fskipper.Throttled_Speed != 60)
+    {
+        fskipper.Mode = FRAMESKIP_MODE_THROTTLED; /* disable FF */
+        fskipper.Throttled_Speed = 60; /* set to default speed */
+        Frame_Skipper_Configure(0); /* non-changing update to apply changes */
+    }
 }
 
 static int GetMenuItemIndex(HMENU hMenu, const char* ItemName)

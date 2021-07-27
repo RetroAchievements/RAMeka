@@ -6,6 +6,10 @@
 #include "shared.h"
 #include "fskipper.h"
 
+#ifdef RETROACHIEVEMENTS
+#include "retroachievements.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Data
 //-----------------------------------------------------------------------------
@@ -145,7 +149,12 @@ void Frame_Skipper_Configure (int v)
     case FRAMESKIP_MODE_THROTTLED:
         {
             fskipper.Throttled_Speed += (v * 10);
-            fskipper.Throttled_Speed = Clamp(fskipper.Throttled_Speed, 10, 400);            // Range 10->400 Hz
+#ifdef RETROACHIEVEMENTS
+            if (RA_HardcoreModeIsActive())
+                fskipper.Throttled_Speed = Clamp(fskipper.Throttled_Speed, 60, 400);        // Range 60->400 Hz
+            else
+#endif
+                fskipper.Throttled_Speed = Clamp(fskipper.Throttled_Speed, 10, 400);            // Range 10->400 Hz
             al_set_timer_speed(g_timer_throttle, 1.0f/(float)fskipper.Throttled_Speed);
             Sound_UpdateClockSpeed();
             break;
