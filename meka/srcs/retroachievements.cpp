@@ -294,6 +294,7 @@ void RA_UpdateMemoryMap()
         mapper = g_machine.mapper;
         switch (mapper)
         {
+            case MAPPER_SMS_NoMapper: // MasterSystem, GameGear (ROM <48KB)
             case MAPPER_Standard: // MasterSystem, GameGear
                 RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x2000); // 8KB
                 break;
@@ -316,6 +317,12 @@ void RA_UpdateMemoryMap()
                 // Othello mapper exposes 8KB at $8000, and The Castle exposes 32KB at $8000
                 RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn32kRAM, RAMeka_RAMByteWriteFn32kRAM, 0x6000);
                 break;
+
+            default:
+                // until we actually support the other custom mappers, just attempt to expose the basic RAM supported by MAPPER_SMS_NoMapper
+                RA_InstallMemoryBank(0, RAMeka_RAMByteReadFn, RAMeka_RAMByteWriteFn, 0x2000); // 8KB
+                break;
+
         }
     }
 }
